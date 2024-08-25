@@ -9,6 +9,16 @@ Simple API written in Python for managing Glicko2 ratings of players
 5. Edit the `glicko2.properties` file as desired
 6. Run `main.py` and you're good to go!
 
+
+This is intended to be used by other backends. There are no request headers or body needed currently, so you can just send a GET request as long as the URL contains all the needed parameters.
+
+This is what a `/get-all` request and response would look like, for instance:
+
+![image](https://github.com/user-attachments/assets/6c860dab-8e59-4f7b-9c70-990a1090e3de)
+
+The floating point numbers in the arrays are the `glicko`, `rd`, and `volatility` in that order.
+
+
 ## Documentation
 
 All parameters are a query in the request URL and **required**. For example, the parameters are in bold:
@@ -23,6 +33,7 @@ Parameters:
 - `override`: whether to override any existing data for that player name (`True` or `False`)
 
 ### /add-custom
+
 Parameters:
 - `player`: the name of the player
 - `override`: whether to override any existing data for that player name (`True` or `False`)
