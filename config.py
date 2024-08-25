@@ -9,6 +9,12 @@ UNRANKED_VOLATILITY: float = 0.06
 MAX_GLIXARE_RATING: float = 25000
 
 def set_property(key: str, value: float):
+    global SYSTEM_CONSTANT
+    global UNRANKED_GLICKO
+    global UNRANKED_RD
+    global UNRANKED_VOLATILITY
+    global MAX_GLIXARE_RATING
+
     match key:
         case 'system-constant':
             SYSTEM_CONSTANT = value

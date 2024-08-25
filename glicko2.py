@@ -1,7 +1,11 @@
+import config
+
 import math
 import numpy
 
-SYSTEM_CONSTANT: float = 0.5
+WIN: float = 1
+LOSS: float = 0
+DRAW: float = 0.5
 
 def to_glicko2(glicko: float) -> float:
     return (glicko - 1500) / 173.7178
@@ -31,7 +35,7 @@ def improvement(variance: float, glicko2: float, enemy_glicko2: float, enemy_rd2
 def f(x: float, variance: float, improvement: float, rd2: float, a: float) -> float:
     result_exp: float = math.exp(x)
     return (result_exp * ((improvement ** 2) - (rd2 ** 2) - variance - result_exp)
-            / 2 * (((rd2 ** 2) + variance + result_exp) ** 2) - ((x - a) / (SYSTEM_CONSTANT ** 2)))
+            / 2 * (((rd2 ** 2) + variance + result_exp) ** 2) - ((x - a) / (config.SYSTEM_CONSTANT ** 2)))
 
 def new_volatility(volatility: float, variance: float, improvement: float, rd2: float) -> float:
     a: float = numpy.log(volatility ** 2)
@@ -44,10 +48,10 @@ def new_volatility(volatility: float, variance: float, improvement: float, rd2: 
     else:
         k = 1
 
-        while f(a - k * SYSTEM_CONSTANT, variance, improvement, rd2, a) < 0:
+        while f(a - k * config.SYSTEM_CONSTANT, variance, improvement, rd2, a) < 0:
             k += 1
 
-        b = a - k * SYSTEM_CONSTANT
+        b = a - k * config.SYSTEM_CONSTANT
 
     Fa: float = f(a, variance, improvement, rd2, a)
     Fb: float = f(a, variance, improvement, rd2, a)
@@ -76,3 +80,10 @@ def new_rd(pr_rd2: float, variance: float) -> float:
 
 def new_glicko(new_rd2: float, glicko2: float, enemy_glicko2: float, enemy_rd2: float, result: float) -> float:
     return glicko2 + (new_rd2 ** 2) * (g(enemy_rd2) * (result - E(glicko2, enemy_glicko2, enemy_rd2)))
+
+def glixare_percentile(glicko: float, rd: float) -> float:
+    return 10000 / (1 + (10 ** (((1500 - glicko) * math.pi / math.sqrt(
+        3 * (numpy.log(10) ** 2) * (rd ** 2) + 2500 * (64 * (math.pi ** 2) + 147 * (numpy.log(10) ** 2))))))) / 10000
+
+def glixare_rating(glixare_percentile: float) -> float:
+    return glixare_percentile * config.MAX_GLIXARE_RATING
