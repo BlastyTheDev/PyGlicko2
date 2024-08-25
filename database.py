@@ -1,6 +1,8 @@
 import glicko2
 import config
 
+import os
+
 # key: name, value: [glicko, rd, volatility]
 players: dict[str, [float, float, float]] = {}
 
@@ -31,12 +33,6 @@ class Player():
 
         return [new_glicko, new_rd, new_volatility]
 
-def load():
-    with open(FILE_NAME) as f:
-        for line in f.readlines():
-            values: list[str] = line.split(',')
-            players[values[0]] = [float(values[1]), float(values[2]), float(values[3])]
-
 def save():
     with open(FILE_NAME, 'w') as f:
         for player in players:
@@ -45,6 +41,15 @@ def save():
             volatility: str = str(players[player][2])
 
             f.write(f'{player},{glicko},{rd},{volatility}\n')
+
+def load():
+    if os.path.exists(FILE_NAME):
+        with open(FILE_NAME) as f:
+            for line in f.readlines():
+                values: list[str] = line.split(',')
+                players[values[0]] = [float(values[1]), float(values[2]), float(values[3])]
+    else:
+        save()
 
 def update_rankings(winner_name: str, loser_name: str) -> None:
     winner: Player = Player(players[winner_name][0], players[winner_name][1], players[winner_name][2])

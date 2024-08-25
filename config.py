@@ -27,6 +27,21 @@ def set_property(key: str, value: float):
         case 'max-glixare-rating':
             MAX_GLIXARE_RATING = value
 
+def save():
+    with open(FILE_NAME, 'w') as f:
+        properties: list[str] = [
+            'system-constant=' + str(SYSTEM_CONSTANT),
+            'unranked-glicko=' + str(UNRANKED_GLICKO),
+            'unranked-rd=' + str(UNRANKED_RD),
+            'unranked-volatility=' + str(UNRANKED_VOLATILITY),
+            'max-glixare-rating=' + str(MAX_GLIXARE_RATING)
+        ]
+
+        for property in properties:
+            f.write(property + '\n')
+
+        f.close()
+
 def load():
     if os.path.exists(FILE_NAME):
         with open(FILE_NAME) as f:
@@ -38,16 +53,4 @@ def load():
                 except TypeError:
                     continue
     else:
-        with open(FILE_NAME, 'w') as f:
-            properties: list[str] = [
-                'system-constant=' + str(SYSTEM_CONSTANT),
-                'unranked-glicko=' + str(UNRANKED_GLICKO),
-                'unranked-rd=' + str(UNRANKED_RD),
-                'unranked-volatility=' + str(UNRANKED_VOLATILITY),
-                'max-glixare-rating=' + str(MAX_GLIXARE_RATING)
-            ]
-
-            for property in properties:
-                f.write(property + '\n')
-
-            f.close()
+        save()
